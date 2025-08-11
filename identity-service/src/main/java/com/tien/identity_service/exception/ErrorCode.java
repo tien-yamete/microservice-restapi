@@ -1,5 +1,8 @@
 package com.tien.identity_service.exception;
 
+import lombok.Getter;
+
+@Getter
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999, "uncategorized error"),
     INVALID_KEY(1001, "invalid key error"),
@@ -18,11 +21,4 @@ public enum ErrorCode {
     private int code;
     private String message;
 
-    public int getCode() {
-        return code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
 }
