@@ -3,9 +3,8 @@ package com.tien.identity_service.dto.request;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Data
+@Getter
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthenticationRequest {
