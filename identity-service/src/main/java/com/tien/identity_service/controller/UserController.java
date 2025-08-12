@@ -1,18 +1,15 @@
 package com.tien.identity_service.controller;
 
-import com.tien.identity_service.dto.request.ApiResponse;
+import com.tien.identity_service.dto.ApiResponse;
 import com.tien.identity_service.dto.request.UserCreationRequest;
 import com.tien.identity_service.dto.request.UserUpdateRequest;
 import com.tien.identity_service.dto.response.UserResponse;
-import com.tien.identity_service.entity.User;
-import com.tien.identity_service.repository.UserRepository;
 import com.tien.identity_service.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 

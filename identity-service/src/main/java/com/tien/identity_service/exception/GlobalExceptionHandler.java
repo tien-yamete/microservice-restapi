@@ -1,7 +1,7 @@
 package com.tien.identity_service.exception;
 
 
-import com.tien.identity_service.dto.request.ApiResponse;
+import com.tien.identity_service.dto.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;

@@ -1,7 +1,7 @@
 package com.tien.identity_service.controller;
 
 import com.nimbusds.jose.JOSEException;
-import com.tien.identity_service.dto.request.ApiResponse;
+import com.tien.identity_service.dto.ApiResponse;
 import com.tien.identity_service.dto.request.AuthenticationRequest;
 import com.tien.identity_service.dto.request.IntrospectRequest;
 import com.tien.identity_service.dto.response.AuthenticationResponse;

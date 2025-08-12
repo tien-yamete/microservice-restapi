@@ -1,4 +1,4 @@
-package com.tien.identity_service.dto.request;
+package com.tien.identity_service.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;

@@ -1,7 +1,7 @@
 package com.tien.identity_service.configuation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tien.identity_service.dto.request.ApiResponse;
+import com.tien.identity_service.dto.ApiResponse;
 import com.tien.identity_service.exception.ErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
