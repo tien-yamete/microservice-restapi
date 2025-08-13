@@ -1,13 +1,19 @@
 package com.tien.identity_service.exception;
 
 
+import java.util.Map;
+import java.util.Objects;
+
 import com.tien.identity_service.dto.ApiResponse;
-import lombok.extern.slf4j.Slf4j;
+import jakarta.validation.ConstraintViolation;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import lombok.extern.slf4j.Slf4j;
 
 @ControllerAdvice
 @Slf4j
@@ -56,8 +62,18 @@ public class GlobalExceptionHandler {
 
         ErrorCode errorCode = ErrorCode.INVALID_KEY;
 
+        Map<String, Object> attributes = null;
+
         try {
             errorCode = ErrorCode.valueOf(enumkey);
+
+            var constraintViolation =
+                    e.getBindingResult().getAllErrors().get(0).unwrap(ConstraintViolation.class);
+
+            attributes = constraintViolation.getConstraintDescriptor().getAttributes();
+
+            log.info(attributes.toString());
+
         }catch (IllegalArgumentException iae){
 
         }
