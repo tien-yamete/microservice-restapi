@@ -4,6 +4,8 @@ import com.nimbusds.jose.JOSEException;
 import com.tien.identity_service.dto.ApiResponse;
 import com.tien.identity_service.dto.request.AuthenticationRequest;
 import com.tien.identity_service.dto.request.IntrospectRequest;
+import com.tien.identity_service.dto.request.LogoutRequest;
+import com.tien.identity_service.dto.request.RefreshTokenRequest;
 import com.tien.identity_service.dto.response.AuthenticationResponse;
 import com.tien.identity_service.dto.response.IntrospectResponse;
 import com.tien.identity_service.service.AuthenticationService;
@@ -26,7 +28,7 @@ public class AuthenticationController {
 
     @PostMapping("/token")
     ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
-        var result = authenticationService.authenticated(request);
+        var result = authenticationService.authenticate(request);
         return  ApiResponse.<AuthenticationResponse>builder()
                 .result(result)
                 .build();
@@ -38,5 +40,19 @@ public class AuthenticationController {
         return  ApiResponse.<IntrospectResponse>builder()
                 .result(result)
                 .build();
+    }
+
+    @PostMapping("/refresh")
+    ApiResponse<AuthenticationResponse> refresh(@RequestBody RefreshTokenRequest request) throws ParseException, JOSEException {
+        var result = authenticationService.refreshToken(request);
+        return  ApiResponse.<AuthenticationResponse>builder()
+                .result(result)
+                .build();
+    }
+
+    @PostMapping("/logout")
+    ApiResponse<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
+        authenticationService.logout(request);
+        return  ApiResponse.<Void>builder().build();
     }
 }

@@ -1,4 +1,4 @@
-package com.tien.identity_service.configuation;
+package com.tien.identity_service.configuration;
 
 import com.tien.identity_service.entity.User;
 import com.tien.identity_service.enums.Role;
@@ -7,7 +7,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;

@@ -1,4 +1,4 @@
-package com.tien.identity_service.configuation;
+package com.tien.identity_service.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tien.identity_service.dto.ApiResponse;
@@ -27,6 +27,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                 .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
+
         response.getWriter().write(objectMapper.writeValueAsString(apiResponse));
         response.flushBuffer();
     }
