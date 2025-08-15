@@ -1,19 +1,21 @@
 package com.tien.identity_service.service;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import com.tien.identity_service.dto.request.RoleRequest;
 import com.tien.identity_service.dto.response.RoleResponse;
 import com.tien.identity_service.mapper.RoleMapper;
 import com.tien.identity_service.repository.PermissionRepository;
 import com.tien.identity_service.repository.RoleRepository;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +30,7 @@ public class RoleService {
 
     public RoleResponse create(RoleRequest request) {
         var role = roleMapper.toRole(request);
-        var permissions =  permissionRepository.findAllById(request.getPermissions());
+        var permissions = permissionRepository.findAllById(request.getPermissions());
         role.setPermissions(new HashSet<>(permissions));
 
         roleRepository.save(role);
@@ -40,7 +42,7 @@ public class RoleService {
         return roles.stream().map(roleMapper::toRoleResponse).collect(Collectors.toList());
     }
 
-    public void delete(String roleName){
+    public void delete(String roleName) {
         roleRepository.deleteById(roleName);
     }
 }

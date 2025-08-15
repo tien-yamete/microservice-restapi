@@ -1,19 +1,22 @@
 package com.tien.identity_service.controller;
 
+import java.util.List;
+
+import jakarta.validation.Valid;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
 import com.tien.identity_service.dto.ApiResponse;
 import com.tien.identity_service.dto.request.UserCreationRequest;
 import com.tien.identity_service.dto.request.UserUpdateRequest;
 import com.tien.identity_service.dto.response.UserResponse;
 import com.tien.identity_service.service.UserService;
-import jakarta.validation.Valid;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -26,6 +29,8 @@ public class UserController {
 
     @PostMapping
     ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
+        log.info("Controller: Create user");
+
         return ApiResponse.<UserResponse>builder()
                 .result(userService.createUser(request))
                 .build();
@@ -67,8 +72,6 @@ public class UserController {
     @DeleteMapping("/{userId}")
     ApiResponse<String> deleteUser(@PathVariable("userId") String userId) {
         userService.deleteUser(userId);
-        return ApiResponse.<String>builder()
-                .result("User has been deleted")
-                .build();
+        return ApiResponse.<String>builder().result("User has been deleted").build();
     }
 }
