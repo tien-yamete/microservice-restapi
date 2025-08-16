@@ -1,10 +1,9 @@
 package com.tien.identity_service.entity;
 
-import java.util.Set;
+import java.util.Date;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -16,12 +15,9 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Role {
+public class InvalidatedToken {
     @Id
-    String name;
+    String id;
 
-    String description;
-
-    @ManyToMany
-    Set<Permission> permissions;
+    Date expiryTime;
 }

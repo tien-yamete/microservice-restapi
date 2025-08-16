@@ -1,0 +1,4 @@
+jwt:
+  issuer: "tavantien.com"     # Issuer của JWT
+  valid-duration: 3600 # in second
+  refreshable-duration: 36000 # in seconds

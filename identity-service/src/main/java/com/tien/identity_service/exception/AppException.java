@@ -1,6 +1,5 @@
 package com.tien.identity_service.exception;
 
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,5 +12,4 @@ public class AppException extends RuntimeException {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
-
 }
