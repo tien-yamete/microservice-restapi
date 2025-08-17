@@ -1,14 +1,18 @@
 package com.tien.identity_service.configuration;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 
+import com.tien.identity_service.constant.PredefinedRole;
+import com.tien.identity_service.entity.Role;
 import com.tien.identity_service.entity.User;
-import com.tien.identity_service.enums.Role;
+import com.tien.identity_service.repository.RoleRepository;
 import com.tien.identity_service.repository.UserRepository;
 
 import lombok.AccessLevel;
@@ -16,7 +20,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
-@ControllerAdvice
+// Seed dữ liệu khởi tạo khi ứng dụng chạy lần đầu: tạo các Role mặc định và User admin.
+
+@Configuration
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
@@ -24,23 +30,56 @@ public class ApplicationInitConfig {
 
     PasswordEncoder passwordEncoder;
 
-    // Chạy sau khi ứng dụng Spring Boot khởi động xong
-    @Bean
-    ApplicationRunner applicationRunner(UserRepository userRepository) {
-        return args -> {
-            // Kiểm tra xem user "admin" đã tồn tại chưa
-            if (userRepository.findByUsername("admin").isEmpty()) {
-                var roles = new HashSet<String>();
-                roles.add(Role.ADMIN.name());
-                User user = User.builder()
-                        .username("admin")
-                        .password(passwordEncoder.encode("admin"))
-                        // .roles(roles)
-                        .build();
+    static final String ADMIN_USERNAME = "admin";
+    static final String ADMIN_PASSWORD = "admin";
 
-                userRepository.save(user);
-                log.warn("admin user has been created with default password:admin, please change it");
+    // Bean này chỉ được tạo khi ứng dụng dùng MySQL driver tương ứng.
+    @Bean
+    @ConditionalOnProperty(
+            prefix = "spring",
+            value = "datasource.driver-class-name",
+            havingValue = "com.mysql.cj.jdbc.Driver")
+    ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository) {
+        return args -> {
+            log.info("[INIT] Starting default data initialization...");
+
+            // Bỏ qua nếu tài khoản admin đã tồn tại
+            boolean adminExisted = userRepository.findByUsername(ADMIN_USERNAME).isPresent();
+            if (adminExisted) {
+                log.info("[INIT] User '{}' already exists. Skipping default seeding.", ADMIN_USERNAME);
+                return;
             }
+
+            // Tạo ROLE_USER
+            Role userRole = roleRepository.save(Role.builder()
+                    .name(PredefinedRole.USER_ROLE)
+                    .description("User role")
+                    .build());
+
+            // Tạo ROLE_ADMIN
+            Role adminRole = roleRepository.save(Role.builder()
+                    .name(PredefinedRole.ADMIN_ROLE)
+                    .description("Admin role")
+                    .build());
+
+            // Gán quyền cho tài khoản admin
+            Set<Role> roles = new HashSet<>();
+            roles.add(adminRole);
+            // roles.add(userRole); // mở dòng này nếu muốn tài khoản admin có cả quyền USER
+
+            User admin = User.builder()
+                    .username(ADMIN_USERNAME)
+                    .password(passwordEncoder.encode(ADMIN_PASSWORD))
+                    .roles(roles)
+                    .build();
+            userRepository.save(admin);
+
+            // Tạo tài khoản admin với mật khẩu đã được mã hoá
+            log.warn(
+                    "[INIT] Admin user '{}' created with default password '{}'. Please change it immediately.",
+                    ADMIN_USERNAME,
+                    ADMIN_PASSWORD);
+            log.info("[INIT] Default data initialization completed.");
         };
     }
 }

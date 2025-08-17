@@ -7,9 +7,9 @@ import jakarta.validation.Valid;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import com.tien.identity_service.dto.ApiResponse;
 import com.tien.identity_service.dto.request.UserCreationRequest;
 import com.tien.identity_service.dto.request.UserUpdateRequest;
+import com.tien.identity_service.dto.response.ApiResponse;
 import com.tien.identity_service.dto.response.UserResponse;
 import com.tien.identity_service.service.UserService;
 
@@ -17,6 +17,14 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+
+// UserController:Chịu trách nhiệm xử lý các API quản lý người dùng trong hệ thống:
+//          - POST   /users              : Tạo mới một user.
+//          - GET    /users              : Lấy danh sách tất cả user.
+//          - GET    /users/{userId}     : Lấy thông tin chi tiết của user theo ID.
+//          - GET    /users/myInfo       : Lấy thông tin user hiện đang đăng nhập.
+//          - PUT    /users/{userId}     : Cập nhật thông tin của user theo ID.
+//          - DELETE /users/{userId}     : Xóa user theo ID.
 
 @Slf4j
 @RestController

@@ -15,6 +15,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
+// PermissionService: Chịu trách nhiệm xử lý nghiệp vụ liên quan đến Permission:
+//          - Tạo permission mới từ request.
+//          - Lấy toàn bộ danh sách permission.
+//          - Xóa permission theo tên.
+
 @Service
 @RequiredArgsConstructor
 @Slf4j

@@ -62,7 +62,8 @@ public class AuthenticationService {
     @Value("${jwt.refreshable-duration}")
     protected long REFRESHABLE_DURATION;
 
-    // Kiểm tra (introspect) token xem còn hợp lệ hay không.
+    //    Introspect: kiểm tra token có hợp lệ hay không.
+    //             - Không ném lỗi ra ngoài, chỉ trả về cờ true/false.
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
 
@@ -77,7 +78,7 @@ public class AuthenticationService {
         return IntrospectResponse.builder().valid(isValid).build();
     }
 
-    // Xác thực người dùng bằng username/password
+    // Xác thực username/password và phát access token.
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         var user = userRepository
@@ -94,6 +95,8 @@ public class AuthenticationService {
         return AuthenticationResponse.builder().token(token).authenticated(true).build();
     }
 
+    //    Logout: revoke token hiện tại (lưu vào bảng invalidated_token).
+    //             - Nếu token đã hết hạn thì bỏ qua (đã không còn giá trị).
     public void logout(LogoutRequest request) throws ParseException, JOSEException {
         try {
             var signToken = verifyToken(request.getToken(), true);
@@ -106,10 +109,15 @@ public class AuthenticationService {
 
             invalidatedTokenRepository.save(invalidatedToken);
         } catch (AppException exception) {
+            // Token hết hạn hoặc không hợp lệ -> coi như đã "logout" rồi
             log.info("Token already expired");
         }
     }
 
+    //    Refresh token:
+    //             - Verify token theo mode refresh (dựa trên issueTime + REFRESHABLE_DURATION).
+    //             - Revoke token cũ.
+    //             - Phát access token mới cho user tương ứng.
     public AuthenticationResponse refreshToken(RefreshTokenRequest request) throws JOSEException, ParseException {
         var signJWT = verifyToken(request.getToken(), true);
 
@@ -117,11 +125,13 @@ public class AuthenticationService {
 
         var expiryTime = signJWT.getJWTClaimsSet().getExpirationTime();
 
+        // Revoke token cũ
         InvalidatedToken invalidatedToken =
                 InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
 
         invalidatedTokenRepository.save(invalidatedToken);
 
+        // Lấy user từ subject để phát token mới
         var username = signJWT.getJWTClaimsSet().getSubject();
 
         var user =
@@ -132,6 +142,10 @@ public class AuthenticationService {
         return AuthenticationResponse.builder().token(token).authenticated(true).build();
     }
 
+    //    Verify token:
+    //             - Kiểm tra chữ ký HMAC.
+    //             - Kiểm tra hạn (access: exp; refresh: iat + REFRESHABLE_DURATION).
+    //             - Kiểm tra token đã bị revoke chưa.
     private SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier(SIGNED_KEY.getBytes());
 
@@ -148,8 +162,10 @@ public class AuthenticationService {
 
         var verified = signedJWT.verify(verifier);
 
+        // Chưa verify hoặc đã hết hạn theo rule tương ứng -> UNAUTHENTICATED
         if (!(verified && expiryTime.after(new Date()))) throw new AppException(ErrorCode.UNAUTHENTICATED);
 
+        // Nếu token đã bị revoke (có trong bảng invalidated_token) -> UNAUTHENTICATED
         if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
             throw new AppException(ErrorCode.UNAUTHENTICATED);
 
@@ -157,6 +173,12 @@ public class AuthenticationService {
     }
 
     // Tạo token
+    //    Phát access token HS512.
+    //             - subject  : username của user.
+    //             - issuer   : ISSUER.
+    //             - iat/exp  : issue/expire theo VALID_DURATION.
+    //             - jti      : random UUID, hỗ trợ revoke.
+    //             - scope    : ghép từ role/permission (dạng chuỗi cách nhau bởi space).
     private String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
@@ -167,7 +189,7 @@ public class AuthenticationService {
                 .expirationTime(new Date(
                         Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()))
                 .jwtID(UUID.randomUUID().toString())
-                .claim("scope", buildScope(user))
+                .claim("scope", buildScope(user)) // scope dạng "ROLE_X READ_USER WRITE_USER ..."
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -184,6 +206,8 @@ public class AuthenticationService {
     }
 
     // Tạo chuỗi scope từ roles và permissions của user
+    //             - Mỗi role tạo 1 entry "ROLE_{roleName}".
+    //             - Mỗi permission của role thêm đúng tên permission.
     private String buildScope(User user) {
         StringJoiner stringJoiner = new StringJoiner(" ");
 
@@ -193,6 +217,7 @@ public class AuthenticationService {
                 if (!CollectionUtils.isEmpty(role.getPermissions()))
                     role.getPermissions().forEach(permission -> stringJoiner.add(permission.getName()));
             });
+
         return stringJoiner.toString();
     }
 }

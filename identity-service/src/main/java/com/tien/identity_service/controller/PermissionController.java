@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
 
-import com.tien.identity_service.dto.ApiResponse;
 import com.tien.identity_service.dto.request.PermissionRequest;
+import com.tien.identity_service.dto.response.ApiResponse;
 import com.tien.identity_service.dto.response.PermissionResponse;
 import com.tien.identity_service.service.PermissionService;
 
@@ -13,6 +13,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+
+// PermissionController: Chịu trách nhiệm xử lý các API quản lý quyền (permission):
+//          - POST   /permissions           : Tạo mới một quyền.
+//          - GET    /permissions           : Lấy danh sách tất cả quyền hiện có.
+//          - DELETE /permissions/{permission} : Xóa một quyền theo tên.
 
 @RestController
 @Slf4j

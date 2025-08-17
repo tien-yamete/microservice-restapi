@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nimbusds.jose.JOSEException;
-import com.tien.identity_service.dto.ApiResponse;
 import com.tien.identity_service.dto.request.AuthenticationRequest;
 import com.tien.identity_service.dto.request.IntrospectRequest;
 import com.tien.identity_service.dto.request.LogoutRequest;
 import com.tien.identity_service.dto.request.RefreshTokenRequest;
+import com.tien.identity_service.dto.response.ApiResponse;
 import com.tien.identity_service.dto.response.AuthenticationResponse;
 import com.tien.identity_service.dto.response.IntrospectResponse;
 import com.tien.identity_service.service.AuthenticationService;
@@ -20,6 +20,12 @@ import com.tien.identity_service.service.AuthenticationService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+
+// AuthenticationController: trách nhiệm xử lý các API liên quan đến xác thực và quản lý JWT:
+//          - /auth/token: cấp token mới khi user đăng nhập.
+//          - /auth/introspect: kiểm tra tính hợp lệ của token (introspection).
+//          - /auth/refresh: cấp lại access token từ refresh token.
+//          - /auth/logout: huỷ token (đăng xuất).
 
 @RestController
 @RequestMapping("/auth")

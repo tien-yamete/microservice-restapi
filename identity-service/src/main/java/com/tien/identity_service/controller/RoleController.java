@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
 
-import com.tien.identity_service.dto.ApiResponse;
 import com.tien.identity_service.dto.request.RoleRequest;
+import com.tien.identity_service.dto.response.ApiResponse;
 import com.tien.identity_service.dto.response.RoleResponse;
 import com.tien.identity_service.service.RoleService;
 
@@ -13,6 +13,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+
+// RoleController: Chịu trách nhiệm xử lý các API quản lý vai trò (role):
+//          - POST   /roles          : Tạo mới một role.
+//          - GET    /roles          : Lấy danh sách tất cả role hiện có.
+//          - DELETE /roles/{role}   : Xóa một role theo tên.
 
 @RestController
 @Slf4j

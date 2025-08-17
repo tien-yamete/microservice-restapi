@@ -9,11 +9,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.tien.identity_service.constant.PredefinedRole;
 import com.tien.identity_service.dto.request.UserCreationRequest;
 import com.tien.identity_service.dto.request.UserUpdateRequest;
 import com.tien.identity_service.dto.response.UserResponse;
 import com.tien.identity_service.entity.User;
-import com.tien.identity_service.enums.Role;
 import com.tien.identity_service.exception.AppException;
 import com.tien.identity_service.exception.ErrorCode;
 import com.tien.identity_service.mapper.UserMapper;
@@ -24,6 +24,12 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+
+// UserService: Nghiệp vụ quản lý người dùng:
+//         - Tạo user (mã hoá mật khẩu, set role mặc định).
+//         - Lấy danh sách / chi tiết user (ràng buộc phân quyền).
+//         - Cập nhật / xoá user.
+//         - Lấy thông tin user hiện tại từ SecurityContext.
 
 @Slf4j
 @Service
@@ -38,6 +44,11 @@ public class UserService {
 
     RoleRepository roleRepository;
 
+    //    Tạo user mới.
+    //            - Check trùng username.
+    //            - Map DTO -> Entity.
+    //            - Mã hoá mật khẩu.
+    //            - Gán role mặc định USER.
     public UserResponse createUser(UserCreationRequest request) {
 
         log.info("Service: Create user");
@@ -50,7 +61,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         HashSet<String> roles = new HashSet<>();
-        roles.add(Role.USER.name());
+        roles.add(PredefinedRole.USER_ROLE);
 
         // user.setRoles(roles);
 
@@ -80,7 +91,10 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
         userMapper.updateUser(user, request);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        if (request.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
 
         var roles = roleRepository.findAllById(request.getRoles());
         user.setRoles(new HashSet<>(roles));

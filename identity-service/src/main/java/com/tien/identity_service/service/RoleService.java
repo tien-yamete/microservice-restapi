@@ -17,6 +17,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
+// RoleService: Xử lý nghiệp vụ liên quan đến Role:
+//          - Tạo role mới và gán danh sách permission.
+//          - Lấy danh sách toàn bộ role.
+//          - Xóa role theo tên.
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
