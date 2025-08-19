@@ -3,6 +3,9 @@ package com.tien.identity_service.service;
 import java.util.HashSet;
 import java.util.List;
 
+import com.tien.identity_service.entity.Role;
+import com.tien.identity_service.mapper.ProfileMapper;
+import com.tien.identity_service.repository.httpclient.ProfileClient;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,66 +47,33 @@ public class UserService {
 
     RoleRepository roleRepository;
 
+    ProfileClient profileClient;
+
+    ProfileMapper profileMapper;
+
     //    Tạo user mới.
     //            - Check trùng username.
     //            - Map DTO -> Entity.
     //            - Mã hoá mật khẩu.
     //            - Gán role mặc định USER.
     public UserResponse createUser(UserCreationRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) throw new AppException(ErrorCode.USER_EXISTED);
 
-        log.info("Service: Create user");
-
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new AppException(ErrorCode.USER_EXISTED);
-        }
         User user = userMapper.toUser(request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        HashSet<Role> roles = new HashSet<>();
+        roleRepository.findById(PredefinedRole.USER_ROLE).ifPresent(roles::add);
 
-        HashSet<String> roles = new HashSet<>();
-        roles.add(PredefinedRole.USER_ROLE);
+        user.setRoles(roles);
+        user = userRepository.save(user);
 
-        // user.setRoles(roles);
+        var profileRequest = profileMapper.toProfileCreationRequest(request);
+        profileRequest.setUserId(user.getId());
 
-        return userMapper.toUserResponse(userRepository.save(user));
-    }
+        profileClient.createProfile(profileRequest);
 
-    // @PreAuthorize("hasAuthority('APPROVE_POST')")
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<UserResponse> getUsers() {
-        log.info("In method getUsers");
-        return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
-    }
-
-    @PostAuthorize("returnObject.username==authentication.name")
-    public UserResponse getUser(String id) {
-        log.info("In method getUser by id");
-        return userMapper.toUserResponse(
-                userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
-    }
-
-    public UserResponse getUserById(String id) {
-        return userMapper.toUserResponse(
-                userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found")));
-    }
-
-    public UserResponse updateUser(String userId, UserUpdateRequest request) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-
-        userMapper.updateUser(user, request);
-
-        if (request.getPassword() != null) {
-            user.setPassword(passwordEncoder.encode(request.getPassword()));
-        }
-
-        var roles = roleRepository.findAllById(request.getRoles());
-        user.setRoles(new HashSet<>(roles));
-
-        return userMapper.toUserResponse(userRepository.save(user));
-    }
-
-    public void deleteUser(String userId) {
-        userRepository.deleteById(userId);
+        return userMapper.toUserResponse(user);
     }
 
     public UserResponse getMyInfo() {
@@ -113,5 +83,35 @@ public class UserService {
         User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         return userMapper.toUserResponse(user);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public UserResponse updateUser(String userId, UserUpdateRequest request) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        userMapper.updateUser(user, request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        var roles = roleRepository.findAllById(request.getRoles());
+        user.setRoles(new HashSet<>(roles));
+
+        return userMapper.toUserResponse(userRepository.save(user));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteUser(String userId) {
+        userRepository.deleteById(userId);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<UserResponse> getUsers() {
+        log.info("In method get Users");
+        return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public UserResponse getUser(String id) {
+        return userMapper.toUserResponse(
+                userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
     }
 }

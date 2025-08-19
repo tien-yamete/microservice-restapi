@@ -10,7 +10,7 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface ProfileMapper {
 
-    Profile toUserProfile(ProfileCreationRequest request); // chuyen du lieu tu dto thanh entity de luu vao db
+    Profile toProfile(ProfileCreationRequest request); // chuyen du lieu tu dto thanh entity de luu vao db
 
     ProfileResponse toProfileResponse(Profile entity); // chuyen du lieu tu entity sang dto de tra ve client
 

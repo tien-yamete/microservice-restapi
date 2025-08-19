@@ -30,7 +30,9 @@ import java.util.List;
 public class ProfileService {
 
     ProfileRepository profileRepository;
+
     FileClient fileClient;
+
     ProfileMapper profileMapper;
 
     public ProfileResponse getByUserId(String userId){
@@ -41,7 +43,8 @@ public class ProfileService {
     }
 
     public ProfileResponse createProfile(ProfileCreationRequest request){
-        Profile profile = profileMapper.toUserProfile(request);
+        Profile profile = profileMapper.toProfile(request);
+
         profile = profileRepository.save(profile);
 
         return profileMapper.toProfileResponse(profile);

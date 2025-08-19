@@ -12,7 +12,7 @@ import com.tien.identity_service.dto.request.AuthenticationRequest;
 import com.tien.identity_service.dto.request.IntrospectRequest;
 import com.tien.identity_service.dto.request.LogoutRequest;
 import com.tien.identity_service.dto.request.RefreshTokenRequest;
-import com.tien.identity_service.dto.response.ApiResponse;
+import com.tien.identity_service.dto.ApiResponse;
 import com.tien.identity_service.dto.response.AuthenticationResponse;
 import com.tien.identity_service.dto.response.IntrospectResponse;
 import com.tien.identity_service.service.AuthenticationService;

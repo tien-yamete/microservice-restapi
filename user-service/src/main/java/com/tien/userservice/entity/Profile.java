@@ -15,10 +15,10 @@ import java.time.LocalDate;
 @Table(name = "users")
 public class Profile {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(name = "user_id", nullable = false, unique = true)
+    @Column(name = "userId", nullable = false, unique = true)
     private String userId;
 
     private String avatar;

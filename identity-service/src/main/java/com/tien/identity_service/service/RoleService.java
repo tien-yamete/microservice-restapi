@@ -43,8 +43,7 @@ public class RoleService {
     }
 
     public List<RoleResponse> getAll() {
-        var roles = roleRepository.findAll();
-        return roles.stream().map(roleMapper::toRoleResponse).collect(Collectors.toList());
+        return roleRepository.findAll().stream().map(roleMapper::toRoleResponse).toList();
     }
 
     public void delete(String roleName) {

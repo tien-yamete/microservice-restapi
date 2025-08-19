@@ -1,16 +1,19 @@
-package com.tien.userservice.dto.response;
+package com.tien.identity_service.dto.response;
 
-import lombok.AccessLevel;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProfileResponse {
+public class UserProfileResponse {
     String id;
-    String Userid;
+    String userId;
     String username;
-    String phone;
     String email;
     String firstName;
     String lastName;

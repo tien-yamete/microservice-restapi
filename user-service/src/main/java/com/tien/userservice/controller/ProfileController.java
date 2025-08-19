@@ -16,38 +16,40 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/users")
 public class ProfileController {
+
     ProfileService profileService;
 
-    @GetMapping("/users/{profileId}")
+    @GetMapping("/{profileId}")
     ApiResponse<ProfileResponse> getProfile(@PathVariable String profileId){
         return ApiResponse.<ProfileResponse>builder()
                 .result(profileService.getProfile(profileId))
                 .build();
     }
 
-    @GetMapping("/users")
+    @GetMapping
     ApiResponse<List<ProfileResponse>> getAllProfiles(){
         return ApiResponse.<List<ProfileResponse>>builder()
                 .result(profileService.getAllProfile())
                 .build();
     }
 
-    @GetMapping("/users/my-profile")
+    @GetMapping("/my-profile")
     ApiResponse<ProfileResponse> updateMyProfile(@RequestBody UpdateProfileRequest request){
         return ApiResponse.<ProfileResponse>builder()
                 .result(profileService.updateMyProfile(request))
                 .build();
     }
 
-    @GetMapping("/users/avatar")
+    @GetMapping("/avatar")
     ApiResponse<ProfileResponse> updateAvatar(@RequestParam("file") MultipartFile file){
         return ApiResponse.<ProfileResponse>builder()
                 .result(profileService.updateAvatar(file))
                 .build();
     }
 
-    @PostMapping("/users/search")
+    @PostMapping("/search")
     ApiResponse<List<ProfileResponse>> search(@RequestBody SearchProfileRequest request){
         return ApiResponse.<List<ProfileResponse>>builder()
                 .result(profileService.search(request))

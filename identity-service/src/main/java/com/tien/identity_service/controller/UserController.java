@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.tien.identity_service.dto.request.UserCreationRequest;
 import com.tien.identity_service.dto.request.UserUpdateRequest;
-import com.tien.identity_service.dto.response.ApiResponse;
+import com.tien.identity_service.dto.ApiResponse;
 import com.tien.identity_service.dto.response.UserResponse;
 import com.tien.identity_service.service.UserService;
 

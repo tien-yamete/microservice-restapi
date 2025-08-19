@@ -1,4 +1,4 @@
-package com.tien.identity_service.dto.response;
+package com.tien.identity_service.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
