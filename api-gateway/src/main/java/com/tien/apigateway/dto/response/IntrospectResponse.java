@@ -1,13 +1,13 @@
-package com.tien.userservice.dto.request;
+package com.tien.apigateway.dto.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class SearchProfileRequest {
-    String keyword;
+public class IntrospectResponse {
+    boolean valid;
 }
