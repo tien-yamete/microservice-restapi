@@ -1,6 +1,9 @@
-package com.tien.userservice.exception;
+package com.tien.notificationservice.exception;
 
-import com.tien.userservice.dto.ApiResponse;
+
+// GlobalExceptionHandler: Chịu trách nhiệm xử lý tập trung tất cả exception trong hệ thống.
+
+import com.tien.notificationservice.dto.ApiResponse;
 import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +14,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.Map;
 import java.util.Objects;
-
-// GlobalExceptionHandler: Chịu trách nhiệm xử lý tập trung tất cả exception trong hệ thống.
 
 @ControllerAdvice
 @Slf4j

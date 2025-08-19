@@ -12,23 +12,18 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "users")
+@Table(name = "user_profile")
 public class Profile {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(name = "user_id", nullable = false, unique = true)
-    private String userId;
+    @Column(name = "userId", nullable = false, unique = true)
+    String userId;
 
-    private String avatar;
-    private String username;
-    private String phone;
-    private String email;
-
-    private String firstName;
-    private String lastName;
-    private LocalDate dob;
-    private String city;
+    String firstName;
+    String lastName;
+    LocalDate dob;
+    String city;
 
 }

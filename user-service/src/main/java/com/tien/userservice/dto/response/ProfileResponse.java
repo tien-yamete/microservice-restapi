@@ -1,15 +1,19 @@
 package com.tien.userservice.dto.response;
 
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
 import java.time.LocalDate;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProfileResponse {
-    private String id;
-    private String Userid;
-    private String username;
-    private String phone;
-    private String email;
-    private String firstName;
-    private String lastName;
-    private LocalDate dob;
-    private String city;
+    String id;
+    String firstName;
+    String lastName;
+    LocalDate dob;
+    String city;
 }

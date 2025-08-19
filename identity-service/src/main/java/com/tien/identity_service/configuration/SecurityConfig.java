@@ -20,7 +20,7 @@ public class SecurityConfig {
 
     // Các endpoint public không yêu cầu xác thực
     private final String[] PUBLIC_ENPOINTS = {
-        "/users", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh"
+        "/users/registration", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh"
     };
 
     private final CustomJwtDecoder customJwtDecoder;

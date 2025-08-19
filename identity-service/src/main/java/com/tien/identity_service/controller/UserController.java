@@ -4,12 +4,11 @@ import java.util.List;
 
 import jakarta.validation.Valid;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import com.tien.identity_service.dto.ApiResponse;
 import com.tien.identity_service.dto.request.UserCreationRequest;
 import com.tien.identity_service.dto.request.UserUpdateRequest;
-import com.tien.identity_service.dto.response.ApiResponse;
 import com.tien.identity_service.dto.response.UserResponse;
 import com.tien.identity_service.service.UserService;
 
@@ -35,7 +34,7 @@ public class UserController {
 
     UserService userService;
 
-    @PostMapping
+    @PostMapping("/registration")
     ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
         log.info("Controller: Create user");
 
@@ -46,11 +45,6 @@ public class UserController {
 
     @GetMapping
     ApiResponse<List<UserResponse>> getUsers() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        log.info("Username: {}", authentication.getName());
-        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
-
         return ApiResponse.<List<UserResponse>>builder()
                 .result(userService.getUsers())
                 .build();

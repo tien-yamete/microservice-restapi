@@ -2,7 +2,6 @@ package com.tien.identity_service.service;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -43,8 +42,7 @@ public class RoleService {
     }
 
     public List<RoleResponse> getAll() {
-        var roles = roleRepository.findAll();
-        return roles.stream().map(roleMapper::toRoleResponse).collect(Collectors.toList());
+        return roleRepository.findAll().stream().map(roleMapper::toRoleResponse).toList();
     }
 
     public void delete(String roleName) {

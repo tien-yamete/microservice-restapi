@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
 
+import com.tien.identity_service.dto.ApiResponse;
 import com.tien.identity_service.dto.request.RoleRequest;
-import com.tien.identity_service.dto.response.ApiResponse;
 import com.tien.identity_service.dto.response.RoleResponse;
 import com.tien.identity_service.service.RoleService;
 

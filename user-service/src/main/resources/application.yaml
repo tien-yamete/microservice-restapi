@@ -6,16 +6,13 @@ spring:
   application:
     name: user-service
   datasource:
-    url: jdbc:mysql://localhost:3306/userdb
+    url: jdbc:mysql://localhost:3306/user_profile
     username: root
     password: 814362
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
-app:
-  services:
-    file: http://localhost:8084
 #eureka:
 #  client:
 #    service-url:
