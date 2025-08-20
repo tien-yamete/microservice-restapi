@@ -13,6 +13,11 @@ spring:
     hibernate:
       ddl-auto: update   # Tự tạo/tự update bảng DB theo entity
     show-sql: true       # Log SQL ra console
+  kafka:
+    bootstrap-servers: localhost:9094
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 jwt:
   signerKey: "dDQUxe/9TmZRTqCPATFEHWkNLKmAMsgl0rdQGa2AIjW1J7dj2dAEsNyZVhfjT5rS" # Khóa ký JWT
