@@ -1,4 +1,4 @@
-package com.tien.userservice.configuration;
+package com.tien.productservice.configuration;
 
 import java.io.IOException;
 
@@ -10,8 +10,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tien.userservice.dto.ApiResponse;
-import com.tien.userservice.exception.ErrorCode;
+import com.tien.productservice.dto.ApiResponse;
+import com.tien.productservice.exception.ErrorCode;
 
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override

@@ -1,5 +1,10 @@
 package com.tien.productservice.service;
 
+import java.util.List;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
+
 import com.tien.productservice.dto.request.BrandRequest;
 import com.tien.productservice.dto.response.BrandResponse;
 import com.tien.productservice.entity.Brand;
@@ -7,13 +12,10 @@ import com.tien.productservice.exception.AppException;
 import com.tien.productservice.exception.ErrorCode;
 import com.tien.productservice.mapper.BrandMapper;
 import com.tien.productservice.repository.BrandRepository;
+
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.AccessLevel;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,37 +25,36 @@ public class BrandService {
     BrandRepository brandRepository;
     BrandMapper brandMapper;
 
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('PRODUCT_WRITE')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('PRODUCT_WRITE')")
     public BrandResponse create(BrandRequest request) {
-        if (brandRepository.existsByName(request.getName()))
-            throw new AppException(ErrorCode.DUPLICATED, "Brand name existed");
-        Brand brand = brandMapper.toEntity(request);
+        if (brandRepository.existsByName(request.getName())) throw new AppException(ErrorCode.DUPLICATED);
+        Brand brand = brandMapper.toBrand(request);
         brandRepository.save(brand);
-        return brandMapper.toResponse(brand);
+        return brandMapper.toBrandResponse(brand);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('PRODUCT_WRITE')")
-    public BrandResponse update(Long id, BrandRequest request) {
-        Brand brand = brandRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND, "Brand not found"));
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('PRODUCT_WRITE')")
+    public BrandResponse updateBrand(Long id, BrandRequest request) {
+        Brand brand = brandRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
         if (request.getName() != null) brand.setName(request.getName());
         if (request.getDescription() != null) brand.setDescription(request.getDescription());
         brandRepository.save(brand);
-        return brandMapper.toResponse(brand);
+        return brandMapper.toBrandResponse(brand);
     }
 
-    public BrandResponse get(Long id) {
-        Brand brand = brandRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND, "Brand not found"));
-        return brandMapper.toResponse(brand);
+    public BrandResponse getBrand(Long id) {
+        Brand brand = brandRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
+        return brandMapper.toBrandResponse(brand);
     }
 
-    public List<BrandResponse> list() {
-        return brandRepository.findAll().stream().map(brandMapper::toResponse).toList();
+    public List<BrandResponse> getAllBrands() {
+        return brandRepository.findAll().stream()
+                .map(brandMapper::toBrandResponse)
+                .toList();
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('PRODUCT_WRITE')")
-    public void delete(Long id) {
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('PRODUCT_WRITE')")
+    public void deleteBrand(Long id) {
         brandRepository.deleteById(id);
     }
 }

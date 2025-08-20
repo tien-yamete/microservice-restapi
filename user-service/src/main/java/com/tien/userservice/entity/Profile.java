@@ -1,9 +1,10 @@
 package com.tien.userservice.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDate;
+
+import jakarta.persistence.*;
+
+import lombok.*;
 
 @Data
 @NoArgsConstructor
@@ -25,5 +26,4 @@ public class Profile {
     String lastName;
     LocalDate dob;
     String city;
-
 }
