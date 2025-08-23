@@ -1,21 +1,19 @@
 package com.tien.userservice.dto.request;
 
-import java.time.LocalDate;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProfileCreationRequest {
-    String userId;
+public class UpdateProfileRequest {
+    String email;
     String firstName;
     String lastName;
-    String username;
-    String email;
     LocalDate dob;
     String city;
 }

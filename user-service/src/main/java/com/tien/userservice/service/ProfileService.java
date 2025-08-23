@@ -2,7 +2,12 @@ package com.tien.userservice.service;
 
 import java.util.List;
 
+import com.tien.userservice.dto.request.SearchUserRequest;
+import com.tien.userservice.dto.request.UpdateProfileRequest;
+import com.tien.userservice.exception.AppException;
+import com.tien.userservice.exception.ErrorCode;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.tien.userservice.dto.request.ProfileCreationRequest;
@@ -40,10 +45,49 @@ public class ProfileService {
         return profileMapper.toProfileResponse(userProfile);
     }
 
+    public ProfileResponse getByUserId(String userId) {
+        Profile userProfile =
+                profileRepository.findByUserId(userId)
+                        .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        return profileMapper.toProfileResponse(userProfile);
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     public List<ProfileResponse> getAllProfiles() {
         var profiles = profileRepository.findAll();
 
         return profiles.stream().map(profileMapper::toProfileResponse).toList();
+    }
+
+    public ProfileResponse getMyProfile() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+
+        var profile = profileRepository.findByUserId(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        return profileMapper.toProfileResponse(profile);
+    }
+
+    public ProfileResponse updateMyProfile(UpdateProfileRequest request) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+
+        var profile = profileRepository.findByUserId(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        profileMapper.update(profile, request);
+
+        return profileMapper.toProfileResponse(profileRepository.save(profile));
+    }
+
+    public List<ProfileResponse> search(SearchUserRequest request) {
+        var userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<Profile> userProfiles = profileRepository.findAllByUsernameLike(request.getKeyword());
+        return userProfiles.stream()
+                .filter(userProfile -> !userId.equals(userProfile.getUserId()))
+                .map(profileMapper::toProfileResponse)
+                .toList();
     }
 }

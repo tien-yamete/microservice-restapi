@@ -11,10 +11,21 @@ import java.util.List;
 
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class ReservationCreateRequest {
-    @NotNull Long orderId;
-    @NotNull Long warehouseId;
-    @NotNull List<Item> items;
+    @NotNull
+    Long orderId;
+    @NotNull
+    Long warehouseId;
+    @NotNull
+    List<Item> items;
 
-    @Data @NoArgsConstructor @AllArgsConstructor @Builder
-    public static class Item { @NotNull Long productId; @Min(1) Integer quantity; }
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class Item {
+        @NotNull
+        Long productId;
+        @Min(1)
+        Integer quantity;
+    }
 }

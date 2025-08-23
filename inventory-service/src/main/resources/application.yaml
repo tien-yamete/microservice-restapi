@@ -11,7 +11,5 @@ spring:
     driver-class-name: "com.mysql.cj.jdbc.Driver"
   jpa:
     hibernate:
-      ddl-auto: update   # T? t?o/t? update b?ng DB theo entity
-    show-sql: true       # Log SQL ra console
-  kafka:
-    bootstrap-servers: localhost:9094
+      ddl-auto: update
+    show-sql: true

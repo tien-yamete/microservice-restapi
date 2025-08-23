@@ -14,7 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service @RequiredArgsConstructor
+@Service
+@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class WarehouseService {
     WarehouseRepository repo;
@@ -37,8 +38,17 @@ public class WarehouseService {
         return mapper.toWarehouseResponse(wh);
     }
 
-    public WarehouseResponse get(Long id){ return mapper.toWarehouseResponse(repo.findById(id).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND))); }
-    public List<WarehouseResponse> list(){ return repo.findAll().stream().map(mapper::toWarehouseResponse).toList(); }
-    public void delete(Long id){ repo.deleteById(id); }
-    public Warehouse require(Long id){ return repo.findById(id).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND)); }
+    public WarehouseResponse get(Long id){
+        return mapper.toWarehouseResponse(repo.findById(id).orElseThrow(() ->
+                new AppException(ErrorCode.RESOURCE_NOT_FOUND)));
+    }
+    public List<WarehouseResponse> list(){
+        return repo.findAll().stream().map(mapper::toWarehouseResponse).toList();
+    }
+    public void delete(Long id){
+        repo.deleteById(id);
+    }
+    public Warehouse require(Long id){
+        return repo.findById(id).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
+    }
 }

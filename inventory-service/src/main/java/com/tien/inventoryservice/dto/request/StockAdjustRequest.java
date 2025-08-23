@@ -9,10 +9,17 @@ import lombok.NoArgsConstructor;
 
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class StockAdjustRequest {
-    @NotNull Long warehouseId;
-    @NotNull Long productId;
-    @Min(1) Integer quantity;
-    @NotNull Type type;
+    @NotNull
+    Long warehouseId;
+    @NotNull
+    Long productId;
+    @Min(1)
+    Integer quantity;
+    @NotNull
+    Type type;
     String reason;
-    public enum Type { IN, OUT }
+    public enum Type {
+        IN,
+        OUT
+    }
 }

@@ -11,10 +11,15 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class Warehouse {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @Column(nullable=false, unique=true, length=100) String code;
-    @Column(nullable=false, length=255) String name;
-    @Column(length=255) String address;
-    @Column(length=50) String region; // optional
+    @Column(nullable=false, unique=true, length=100)
+    String code;
+    @Column(nullable=false, length=255)
+    String name;
+    @Column(length=255)
+    String address;
+    @Column(length=50)
+    String region; // optional
 }

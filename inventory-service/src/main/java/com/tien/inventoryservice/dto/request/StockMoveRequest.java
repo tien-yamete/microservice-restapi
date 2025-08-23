@@ -9,9 +9,13 @@ import lombok.NoArgsConstructor;
 
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class StockMoveRequest {
-    @NotNull Long warehouseFromId;
-    @NotNull Long warehouseToId;
-    @NotNull Long productId;
-    @Min(1) Integer quantity;
+    @NotNull
+    Long warehouseFromId;
+    @NotNull
+    Long warehouseToId;
+    @NotNull
+    Long productId;
+    @Min(1)
+    Integer quantity;
     String reason;
 }

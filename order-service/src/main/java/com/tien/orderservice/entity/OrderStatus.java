@@ -1,2 +1,4 @@
 package com.tien.orderservice.entity;
-public enum OrderStatus { PENDING, APPROVED, COMPLETED, CANCELLED, FAILED }
+public enum OrderStatus {
+    PENDING, APPROVED, COMPLETED, CANCELLED, FAILED
+}

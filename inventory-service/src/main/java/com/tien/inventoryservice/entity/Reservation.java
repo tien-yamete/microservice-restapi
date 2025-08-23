@@ -12,9 +12,12 @@ import java.util.List;
 public class Reservation {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     Long orderId;
+
     @Enumerated(EnumType.STRING)
     Status status;
+
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 
@@ -23,6 +26,14 @@ public class Reservation {
 
     public enum Status { PENDING, CONFIRMED, RELEASED }
 
-    @PrePersist void pre(){ createdAt = updatedAt = LocalDateTime.now(); if(status==null) status = Status.PENDING; }
-    @PreUpdate void upd(){ updatedAt = LocalDateTime.now(); }
+    @PrePersist
+    void pre(){
+        createdAt = updatedAt = LocalDateTime.now();
+        if(status==null)
+            status = Status.PENDING;
+    }
+    @PreUpdate
+    void upd(){
+        updatedAt = LocalDateTime.now();
+    }
 }

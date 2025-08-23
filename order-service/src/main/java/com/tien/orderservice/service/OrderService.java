@@ -1,6 +1,5 @@
 package com.tien.orderservice.service;
 
-import com.tien.orderservice.dto.*;
 import com.tien.orderservice.dto.request.OrderCreateRequest;
 import com.tien.orderservice.dto.request.OrderSearchRequest;
 import com.tien.orderservice.dto.response.OrderItemResponse;
@@ -39,7 +38,11 @@ public class OrderService {
             order.getItems().add(OrderItem.builder().order(order).productId(it.getProductId()).quantity(it.getQuantity()).build());
         }
         order = orderRepository.save(order);
+        order.setStatus(OrderStatus.PENDING);
+        order = orderRepository.save(order);
         sagaGateway.start(order);
+        order.setStatus(OrderStatus.COMPLETED);
+        order = orderRepository.save(order);
         return toResponse(order);
     }
 

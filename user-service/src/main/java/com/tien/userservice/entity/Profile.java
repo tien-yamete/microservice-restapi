@@ -24,6 +24,10 @@ public class Profile {
 
     String firstName;
     String lastName;
+
+    String username;
+    String email;
+
     LocalDate dob;
     String city;
 }

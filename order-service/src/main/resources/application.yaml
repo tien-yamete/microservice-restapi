@@ -18,3 +18,7 @@ spring:
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
+app:
+  services:
+    inventory: http://localhost:8084/inventory
+    payment: http://localhost:8086/payment

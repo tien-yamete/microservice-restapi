@@ -15,7 +15,15 @@ public class OrderCreateRequest {
     @NotNull BigDecimal amount;
     @NotNull List<Item> items;
 
-    @Data @NoArgsConstructor @AllArgsConstructor @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class Item { @NotNull Long productId; @Min(1) Integer quantity; }
+    public static class Item {
+        @NotNull
+        Long productId; 
+        @Min(1)
+        Integer quantity;
+    }
 }

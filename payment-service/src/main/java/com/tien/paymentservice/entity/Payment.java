@@ -19,19 +19,31 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     Long orderId;
     String customerId;
+
     @Enumerated(EnumType.STRING)
     PaymentMethod method;
+
     BigDecimal amount;
+
     @Enumerated(EnumType.STRING)
     PaymentStatus status;
+
     String externalAuthId;
     String externalCaptureId;
     String externalRefundId;
+
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 
-    @PrePersist void pre(){ createdAt = updatedAt = LocalDateTime.now(); if (status==null) status=PaymentStatus.CREATED; }
-    @PreUpdate void upd(){ updatedAt = LocalDateTime.now(); }
+    @PrePersist void pre(){
+        createdAt = updatedAt = LocalDateTime.now();
+        if (status==null)
+            status=PaymentStatus.CREATED;
+    }
+    @PreUpdate void upd(){
+        updatedAt = LocalDateTime.now();
+    }
 }
