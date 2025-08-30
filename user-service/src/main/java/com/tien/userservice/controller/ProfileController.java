@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.tien.userservice.dto.request.SearchUserRequest;
 import com.tien.userservice.dto.request.UpdateProfileRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import com.tien.userservice.dto.ApiResponse;
@@ -14,6 +15,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -37,6 +39,7 @@ public class ProfileController {
 
     @GetMapping("/users/my-profile")
     ApiResponse<ProfileResponse> getMyProfile() {
+
         return ApiResponse.<ProfileResponse>builder()
                 .result(profileService.getMyProfile())
                 .build();
