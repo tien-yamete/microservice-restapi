@@ -19,7 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service @RequiredArgsConstructor
+@Service
+@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class StockService {
     ProductStockRepository psRepo;

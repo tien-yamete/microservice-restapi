@@ -1,6 +1,9 @@
 package com.tien.productservice.controller;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import jakarta.validation.Valid;
 
@@ -63,7 +66,7 @@ public class ProductController {
             @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(required = false) Boolean active,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "3") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDir) {
         Page<ProductResponse> result =
@@ -71,4 +74,27 @@ public class ProductController {
         return ResponseEntity.ok(
                 ApiResponse.<Page<ProductResponse>>builder().result(result).build());
     }
+
+    @GetMapping("/all-paged")
+    public ResponseEntity<ApiResponse<Map<Integer, List<ProductResponse>>>> getAllPaged(
+            @RequestParam(defaultValue = "3") int size) {
+
+        // lấy toàn bộ product
+        List<ProductResponse> allProducts = productService.findAll();
+
+        // tự chia trang bằng Java
+        Map<Integer, List<ProductResponse>> paged = new LinkedHashMap<>();
+        int pageCount = (int) Math.ceil((double) allProducts.size() / size);
+
+        for (int i = 0; i < pageCount; i++) {
+            int start = i * size;
+            int end = Math.min(start + size, allProducts.size());
+            paged.put(i, allProducts.subList(start, end));
+        }
+
+        return ResponseEntity.ok(ApiResponse.<Map<Integer, List<ProductResponse>>>builder()
+                .result(paged)
+                .build());
+    }
+
 }

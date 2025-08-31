@@ -9,7 +9,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Data @NoArgsConstructor @AllArgsConstructor @Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ReservationCreateRequest {
     @NotNull
     Long orderId;

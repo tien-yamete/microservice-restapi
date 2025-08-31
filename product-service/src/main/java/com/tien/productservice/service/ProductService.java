@@ -1,6 +1,7 @@
 package com.tien.productservice.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import jakarta.transaction.Transactional;
@@ -133,5 +134,14 @@ public class ProductService {
         Pageable pageable = PageRequest.of(Math.max(page, 0), Math.min(size, 100), sort);
 
         return productRepository.findAll(spec, pageable).map(productMapper::toProductResponse);
+    }
+
+    @Transactional
+    public List<ProductResponse> findAll() {
+        // sắp xếp mới nhất trước cho đồng nhất với search mặc định
+        return productRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"))
+                .stream()
+                .map(productMapper::toProductResponse)
+                .toList();
     }
 }

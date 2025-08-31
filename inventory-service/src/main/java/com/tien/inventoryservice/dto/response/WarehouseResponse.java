@@ -7,5 +7,9 @@ import lombok.NoArgsConstructor;
 
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class WarehouseResponse {
-    Long id; String code; String name; String address; String region;
+    Long id;
+    String code;
+    String name;
+    String address;
+    String region;
 }

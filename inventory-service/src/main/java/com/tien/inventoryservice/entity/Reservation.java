@@ -7,8 +7,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity @Table(name="reservations")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Entity
+@Table(name="reservations")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Reservation {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;

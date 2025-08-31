@@ -84,9 +84,13 @@ public class ProfileService {
         return profileMapper.toProfileResponse(profileRepository.save(profile));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public List<ProfileResponse> search(SearchUserRequest request) {
         var userId = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<Profile> userProfiles = profileRepository.findAllByUsernameLike(request.getKeyword());
+        List<Profile> userProfiles = profileRepository.findByUsernameContainingIgnoreCase(request.getKeyword());
+        log.info(userId);
+        log.info(request.getKeyword());
+        log.info(userProfiles.toString());
         return userProfiles.stream()
                 .filter(userProfile -> !userId.equals(userProfile.getUserId()))
                 .map(profileMapper::toProfileResponse)

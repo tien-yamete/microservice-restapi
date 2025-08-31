@@ -3,8 +3,13 @@ package com.tien.inventoryservice.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity @Table(name="reservation_items")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Entity
+@Table(name="reservation_items")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ReservationItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
