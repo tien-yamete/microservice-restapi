@@ -19,10 +19,11 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Order {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    String customerId;
+    String userId;
 
     BigDecimal amount;
 

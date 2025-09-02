@@ -15,7 +15,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderResponse {
     Long id;
-    String customerId;
+    String userId;
     BigDecimal amount;
     OrderStatus status;
     LocalDateTime createdAt;

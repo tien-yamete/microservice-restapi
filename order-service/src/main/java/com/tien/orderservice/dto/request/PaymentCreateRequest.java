@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PaymentCreateRequest {
     Long orderId;
-    String customerId; // optional
+    String userId; // optional
     String method;     // keep as String to avoid coupling enums
     BigDecimal amount;
 }

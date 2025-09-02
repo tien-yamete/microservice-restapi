@@ -55,15 +55,11 @@ public class ProductService {
                 .findById(request.getBrandId())
                 .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
 
-        Product product = Product.builder()
-                .sku(request.getSku())
-                .name(request.getName())
-                .description(request.getDescription())
-                .category(category)
-                .brand(brand)
-                .price(request.getPrice())
-                .active(Optional.ofNullable(request.getActive()).orElse(Boolean.TRUE))
-                .build();
+        Product  product = productMapper.toProduct(request);
+
+        product.setCategory(category);
+        product.setBrand(brand);
+
         productRepository.save(product);
         return productMapper.toProductResponse(product);
     }
@@ -86,10 +82,8 @@ public class ProductService {
                     .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
             product.setBrand(brand);
         }
-        if (request.getName() != null) product.setName(request.getName());
-        if (request.getDescription() != null) product.setDescription(request.getDescription());
-        if (request.getPrice() != null) product.setPrice(request.getPrice());
-        if (request.getActive() != null) product.setActive(request.getActive());
+
+        productMapper.updateProductFromCreateRequest(request, product);
 
         productRepository.save(product);
         return productMapper.toProductResponse(product);

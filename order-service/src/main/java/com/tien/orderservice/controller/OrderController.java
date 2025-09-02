@@ -40,7 +40,7 @@ public class OrderController {
         return ResponseEntity.ok(ApiResponse.<Page<OrderResponse>>builder().result(result).build());
     }
 
-    @PatchMapping("/{id}/status")
+    @PutMapping("/{id}/status")
     public ResponseEntity<ApiResponse<OrderResponse>> updateStatus(@PathVariable Long id,
                                                                    @RequestParam OrderStatus status){
         var response = service.updateStatus(id, status);

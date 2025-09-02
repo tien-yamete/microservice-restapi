@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderSearchRequest {
-    String customerId;
+    String userId;
     OrderStatus status;
     BigDecimal minAmount;
     BigDecimal maxAmount;

@@ -1,8 +1,8 @@
 package com.tien.paymentservice.controller;
 
 import com.tien.paymentservice.dto.ApiResponse;
-import com.tien.paymentservice.dto.PaymentCreateRequest;
-import com.tien.paymentservice.dto.PaymentResponse;
+import com.tien.paymentservice.dto.request.PaymentCreateRequest;
+import com.tien.paymentservice.dto.response.PaymentResponse;
 import com.tien.paymentservice.entity.Payment;
 import com.tien.paymentservice.repository.PaymentRepository;
 import com.tien.paymentservice.service.PaymentService;
@@ -38,7 +38,7 @@ public class PaymentController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<PaymentResponse>> create(@RequestBody @Valid PaymentCreateRequest req){
-        Payment p = paymentService.create(req.getOrderId(), req.getCustomerId(), req.getAmount(), req.getMethod());
+        Payment p = paymentService.create(req);
         return ResponseEntity.ok(ApiResponse.<PaymentResponse>builder()
                 .result(PaymentResponse.builder()
                         .id(p.getId())

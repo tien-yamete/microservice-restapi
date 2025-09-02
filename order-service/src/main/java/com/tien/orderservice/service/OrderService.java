@@ -17,13 +17,16 @@ import com.tien.orderservice.repository.spec.OrderSpecifications;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -36,7 +39,7 @@ public class OrderService {
     private OrderResponse map(Order o){
         return OrderResponse.builder()
                 .id(o.getId())
-                .customerId(o.getCustomerId())
+                .userId(o.getUserId())
                 .amount(o.getAmount())
                 .status(o.getStatus())
                 .createdAt(o.getCreatedAt())
@@ -54,7 +57,12 @@ public class OrderService {
     public OrderResponse create(OrderCreateRequest req){
         // 1) Create Order entity
         Order o = new Order();
-        o.setCustomerId(req.getCustomerId());
+
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+
+        log.info("user id : {}", userId);
+        o.setUserId(userId);
 
         // Calculate amount from product-service
         java.math.BigDecimal total = java.math.BigDecimal.ZERO;
@@ -105,7 +113,7 @@ public class OrderService {
         try {
             PaymentCreateRequest p = PaymentCreateRequest.builder()
                     .orderId(o.getId())
-                    .customerId(o.getCustomerId())
+                    .userId(o.getUserId())
                     .amount(o.getAmount())
                     .method(null)
                     .build();
@@ -124,7 +132,7 @@ public class OrderService {
         Sort sort = Sort.by(("desc".equalsIgnoreCase(p.getSortDir())? Sort.Direction.DESC : Sort.Direction.ASC),
                 p.getSortBy()==null? "createdAt": p.getSortBy());
         Pageable pageable = PageRequest.of(p.getPage()==null?0:p.getPage(), p.getSize()==null?20:p.getSize(), sort);
-        var spec = OrderSpecifications.build(p.getCustomerId(), p.getStatus(), p.getMinAmount(), p.getMaxAmount());
+        var spec = OrderSpecifications.build(p.getUserId(), p.getStatus(), p.getMinAmount(), p.getMaxAmount());
         Page<Order> page = orderRepository.findAll(spec, pageable);
         List<OrderResponse> data = page.getContent().stream().map(this::map).collect(Collectors.toList());
         return new PageImpl<>(data, pageable, page.getTotalElements());

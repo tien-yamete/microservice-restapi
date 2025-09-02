@@ -28,7 +28,7 @@ public class SagaGatewayRest  {
             // Step 0: create payment record if not exists
             paymentClient.create(com.tien.orderservice.dto.request.PaymentCreateRequest.builder()
                     .orderId(order.getId())
-                    .customerId(order.getCustomerId())
+                    .userId(order.getUserId())
                     .method("COD")
                     .amount(order.getAmount())
                     .build());
@@ -63,7 +63,7 @@ public class SagaGatewayRest  {
                 // Step 0: create payment record if not exists
                 paymentClient.create(com.tien.orderservice.dto.request.PaymentCreateRequest.builder()
                         .orderId(order.getId())
-                        .customerId(order.getCustomerId())
+                        .userId(order.getUserId())
                         .method("COD")
                         .amount(order.getAmount())
                         .build()); paymentClient.refund(order.getId()); } catch (Exception ignore) { log.warn("Refund failed/ignored"); }
@@ -71,7 +71,7 @@ public class SagaGatewayRest  {
                 // Step 0: create payment record if not exists
                 paymentClient.create(com.tien.orderservice.dto.request.PaymentCreateRequest.builder()
                         .orderId(order.getId())
-                        .customerId(order.getCustomerId())
+                        .userId(order.getUserId())
                         .method("COD")
                         .amount(order.getAmount())
                         .build()); inventoryClient.release(order.getId(), DEFAULT_WAREHOUSE_ID); } catch (Exception ignore) { log.warn("Release failed/ignored"); }
@@ -82,7 +82,7 @@ public class SagaGatewayRest  {
                 // Step 0: create payment record if not exists
                 paymentClient.create(com.tien.orderservice.dto.request.PaymentCreateRequest.builder()
                         .orderId(order.getId())
-                        .customerId(order.getCustomerId())
+                        .userId(order.getUserId())
                         .method("COD")
                         .amount(order.getAmount())
                         .build()); paymentClient.refund(order.getId()); } catch (Exception ignore) { }
@@ -90,7 +90,7 @@ public class SagaGatewayRest  {
                 // Step 0: create payment record if not exists
                 paymentClient.create(com.tien.orderservice.dto.request.PaymentCreateRequest.builder()
                         .orderId(order.getId())
-                        .customerId(order.getCustomerId())
+                        .userId(order.getUserId())
                         .method("COD")
                         .amount(order.getAmount())
                         .build()); inventoryClient.release(order.getId(), DEFAULT_WAREHOUSE_ID); } catch (Exception ignore) { }
@@ -104,7 +104,7 @@ public class SagaGatewayRest  {
             // Step 0: create payment record if not exists
             paymentClient.create(com.tien.orderservice.dto.request.PaymentCreateRequest.builder()
                     .orderId(order.getId())
-                    .customerId(order.getCustomerId())
+                    .userId(order.getUserId())
                     .method("COD")
                     .amount(order.getAmount())
                     .build()); inventoryClient.release(order.getId(), DEFAULT_WAREHOUSE_ID); } catch (Exception ignore) { }
@@ -112,7 +112,7 @@ public class SagaGatewayRest  {
             // Step 0: create payment record if not exists
             paymentClient.create(com.tien.orderservice.dto.request.PaymentCreateRequest.builder()
                     .orderId(order.getId())
-                    .customerId(order.getCustomerId())
+                    .userId(order.getUserId())
                     .method("COD")
                     .amount(order.getAmount())
                     .build()); paymentClient.refund(order.getId()); } catch (Exception ignore) { }

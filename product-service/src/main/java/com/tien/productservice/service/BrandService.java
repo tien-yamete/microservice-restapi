@@ -27,7 +27,8 @@ public class BrandService {
 
     @PreAuthorize("hasRole('ADMIN') or hasAuthority('PRODUCT_WRITE')")
     public BrandResponse create(BrandRequest request) {
-        if (brandRepository.existsByName(request.getName())) throw new AppException(ErrorCode.DUPLICATED);
+        if (brandRepository.existsByName(request.getName()))
+            throw new AppException(ErrorCode.DUPLICATED);
         Brand brand = brandMapper.toBrand(request);
         brandRepository.save(brand);
         return brandMapper.toBrandResponse(brand);
@@ -35,9 +36,12 @@ public class BrandService {
 
     @PreAuthorize("hasRole('ADMIN') or hasAuthority('PRODUCT_WRITE')")
     public BrandResponse updateBrand(Long id, BrandRequest request) {
-        Brand brand = brandRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
-        if (request.getName() != null) brand.setName(request.getName());
-        if (request.getDescription() != null) brand.setDescription(request.getDescription());
+        Brand brand = brandRepository.findById(id).orElseThrow(() ->
+                new AppException(ErrorCode.RESOURCE_NOT_FOUND));
+        if (request.getName() != null)
+            brand.setName(request.getName());
+        if (request.getDescription() != null)
+            brand.setDescription(request.getDescription());
         brandRepository.save(brand);
         return brandMapper.toBrandResponse(brand);
     }

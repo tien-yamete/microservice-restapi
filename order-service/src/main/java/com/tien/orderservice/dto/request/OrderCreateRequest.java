@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderCreateRequest {
-    String customerId;
+
     @NotNull BigDecimal amount;
     @NotNull List<Item> items;
     Long warehouseId; // optional, defaults by system

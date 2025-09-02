@@ -1,4 +1,4 @@
-package com.tien.paymentservice.dto;
+package com.tien.paymentservice.dto.request;
 
 import com.tien.paymentservice.entity.PaymentMethod;
 import jakarta.validation.constraints.DecimalMin;
@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 public class PaymentCreateRequest {
     @NotNull
     Long orderId;
-    String customerId; // optional for future
     PaymentMethod method;
     @NotNull
     @DecimalMin(value="0.0", inclusive=true) BigDecimal amount;

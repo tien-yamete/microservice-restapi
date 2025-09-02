@@ -21,7 +21,7 @@ public class Payment {
     Long id;
 
     Long orderId;
-    String customerId;
+    String userId;
 
     @Enumerated(EnumType.STRING)
     PaymentMethod method;

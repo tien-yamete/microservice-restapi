@@ -1,4 +1,4 @@
-package com.tien.paymentservice.dto;
+package com.tien.paymentservice.dto.response;
 
 import com.tien.paymentservice.entity.PaymentMethod;
 import com.tien.paymentservice.entity.PaymentStatus;
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class PaymentResponse {
     Long id;
     Long orderId;
-    String customerId;
+    String userId;
     PaymentMethod method;
     BigDecimal amount;
     PaymentStatus status;
