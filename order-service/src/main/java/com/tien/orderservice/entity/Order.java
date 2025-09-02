@@ -18,12 +18,15 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     String customerId;
+
     BigDecimal amount;
+
+    Long warehouseId;
 
     @Enumerated(EnumType.STRING)
     OrderStatus status;
@@ -32,12 +35,14 @@ public class Order {
     LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    List<OrderItem> items = new ArrayList<>();
+    @Builder.Default
+    List<OrderItem> items = new ArrayList<>();   // <-- QUAN TRỌNG
 
     @PrePersist void pre() {
         createdAt = updatedAt = LocalDateTime.now();
-        if (status==null) status = OrderStatus.PENDING;
+        if (status == null) status = OrderStatus.PENDING;
     }
+
     @PreUpdate void upd() {
         updatedAt = LocalDateTime.now();
     }

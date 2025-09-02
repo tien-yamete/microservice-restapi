@@ -3,8 +3,7 @@ package com.tien.paymentservice.service;
 import com.tien.paymentservice.entity.Payment;
 import com.tien.paymentservice.entity.PaymentMethod;
 import com.tien.paymentservice.entity.PaymentStatus;
-import com.tien.paymentservice.exception.AppException;
-import com.tien.paymentservice.exception.ErrorCode;
+
 import com.tien.paymentservice.repository.PaymentRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -13,50 +12,54 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
-@Service @RequiredArgsConstructor
+@Service
+@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PaymentService {
 
     PaymentRepository paymentRepository;
+    org.springframework.kafka.core.KafkaTemplate<String, String> kafkaTemplate;
 
     @Transactional
-    public Payment ensure(Long orderId, String customerId, BigDecimal amount, PaymentMethod method){
-        return paymentRepository.findByOrderId(orderId).orElseGet(() ->
-            paymentRepository.save(Payment.builder().orderId(orderId).customerId(customerId).amount(amount).method(method).status(PaymentStatus.CREATED).build())
-        );
+    public Payment create(Long orderId, String customerId, BigDecimal amount, PaymentMethod method){
+        if (method == null) method = PaymentMethod.COD;
+        Payment p = Payment.builder()
+                .orderId(orderId)
+                .customerId(customerId)
+                .amount(amount)
+                .method(method)
+                .status(PaymentStatus.CREATED)
+                .build();
+        return paymentRepository.save(p);   // <- không code gì sau return
     }
 
     @Transactional
-    public Payment authorize(Long orderId){
-        Payment p = paymentRepository.findByOrderId(orderId).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
-        // mock authorize success if amount >= 0
-        if (p.getAmount() == null || p.getAmount().signum() < 0) {
-            p.setStatus(PaymentStatus.FAILED);
-        } else {
-            p.setStatus(PaymentStatus.AUTHORIZED);
-            p.setExternalAuthId("AUTH-" + orderId);
-        }
-        return paymentRepository.save(p);
+    public void authorize(Long orderId){
+        Payment p = paymentRepository.findByOrderId(orderId).orElseThrow();
+        p.setStatus(PaymentStatus.AUTHORIZED);
+        p.setExternalAuthId("SIM-AUTH-" + Instant.now().toEpochMilli());
+        paymentRepository.save(p);
     }
 
     @Transactional
-    public Payment capture(Long orderId){
-        Payment p = paymentRepository.findByOrderId(orderId).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
-        if (p.getStatus() != PaymentStatus.AUTHORIZED) throw new AppException(ErrorCode.INVALID_ARGUMENT);
+    public void capture(Long orderId){
+        Payment p = paymentRepository.findByOrderId(orderId).orElseThrow();
         p.setStatus(PaymentStatus.CAPTURED);
-        p.setExternalCaptureId("CAP-" + orderId);
-        return paymentRepository.save(p);
+        p.setExternalCaptureId("SIM-CAP-" + Instant.now().toEpochMilli());
+        paymentRepository.save(p);
+
+        // phát sự kiện sau khi lưu thành công
+        String payload = "{\"type\":\"payment.captured\",\"orderId\":" + orderId + "}";
+        kafkaTemplate.send("payment.captured", payload);
     }
 
     @Transactional
-    public Payment refund(Long orderId){
-        Payment p = paymentRepository.findByOrderId(orderId).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
-        if (p.getStatus() == PaymentStatus.CAPTURED || p.getStatus() == PaymentStatus.AUTHORIZED) {
-            p.setStatus(PaymentStatus.REFUNDED);
-            p.setExternalRefundId("REF-" + orderId);
-            return paymentRepository.save(p);
-        }
-        return p;
+    public void refund(Long orderId){
+        Payment p = paymentRepository.findByOrderId(orderId).orElseThrow();
+        p.setStatus(PaymentStatus.REFUNDED);
+        p.setExternalRefundId("SIM-REF-" + Instant.now().toEpochMilli());
+        paymentRepository.save(p);
     }
 }

@@ -37,4 +37,5 @@ public class StockController {
     public ResponseEntity<ApiResponse<List<ProductStockResponse>>> byProduct(@PathVariable Long productId){
         return ResponseEntity.ok(ApiResponse.<List<ProductStockResponse>>builder().result(stockService.listByProduct(productId)).build());
     }
+
 }

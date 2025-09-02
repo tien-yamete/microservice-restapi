@@ -16,16 +16,22 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SagaGatewayRest implements SagaGateway {
+public class SagaGatewayRest  {
     private final InventoryClient inventoryClient;
     private final PaymentClient paymentClient;
 
     private static final Long DEFAULT_WAREHOUSE_ID = 1L;
 
-    @Override
     public void start(Order order) {
         log.info("[SAGA-REST] Start order {}", order.getId());
         try {
+            // Step 0: create payment record if not exists
+            paymentClient.create(com.tien.orderservice.dto.request.PaymentCreateRequest.builder()
+                    .orderId(order.getId())
+                    .customerId(order.getCustomerId())
+                    .method("COD")
+                    .amount(order.getAmount())
+                    .build());
             // Step 1: Reserve inventory
             ReservationCreateRequest req = ReservationCreateRequest.builder()
                     .orderId(order.getId())
@@ -53,21 +59,62 @@ public class SagaGatewayRest implements SagaGateway {
         } catch (FeignException e) {
             log.error("[SAGA-REST] Step failed for order {}: {} - compensating", order.getId(), e.contentUTF8());
             // Compensation: refund and release reservation
-            try { paymentClient.refund(order.getId()); } catch (Exception ignore) { log.warn("Refund failed/ignored"); }
-            try { inventoryClient.release(order.getId(), DEFAULT_WAREHOUSE_ID); } catch (Exception ignore) { log.warn("Release failed/ignored"); }
+            try {
+                // Step 0: create payment record if not exists
+                paymentClient.create(com.tien.orderservice.dto.request.PaymentCreateRequest.builder()
+                        .orderId(order.getId())
+                        .customerId(order.getCustomerId())
+                        .method("COD")
+                        .amount(order.getAmount())
+                        .build()); paymentClient.refund(order.getId()); } catch (Exception ignore) { log.warn("Refund failed/ignored"); }
+            try {
+                // Step 0: create payment record if not exists
+                paymentClient.create(com.tien.orderservice.dto.request.PaymentCreateRequest.builder()
+                        .orderId(order.getId())
+                        .customerId(order.getCustomerId())
+                        .method("COD")
+                        .amount(order.getAmount())
+                        .build()); inventoryClient.release(order.getId(), DEFAULT_WAREHOUSE_ID); } catch (Exception ignore) { log.warn("Release failed/ignored"); }
             throw e;
         } catch (RuntimeException e) {
             log.error("[SAGA-REST] Runtime failure for order {}: {}", order.getId(), e.getMessage());
-            try { paymentClient.refund(order.getId()); } catch (Exception ignore) { }
-            try { inventoryClient.release(order.getId(), DEFAULT_WAREHOUSE_ID); } catch (Exception ignore) { }
+            try {
+                // Step 0: create payment record if not exists
+                paymentClient.create(com.tien.orderservice.dto.request.PaymentCreateRequest.builder()
+                        .orderId(order.getId())
+                        .customerId(order.getCustomerId())
+                        .method("COD")
+                        .amount(order.getAmount())
+                        .build()); paymentClient.refund(order.getId()); } catch (Exception ignore) { }
+            try {
+                // Step 0: create payment record if not exists
+                paymentClient.create(com.tien.orderservice.dto.request.PaymentCreateRequest.builder()
+                        .orderId(order.getId())
+                        .customerId(order.getCustomerId())
+                        .method("COD")
+                        .amount(order.getAmount())
+                        .build()); inventoryClient.release(order.getId(), DEFAULT_WAREHOUSE_ID); } catch (Exception ignore) { }
             throw e;
         }
     }
 
-    @Override
     public void compensateAfterCancel(Order order) {
         log.info("[SAGA-REST] Compensate after cancel order {}", order.getId());
-        try { inventoryClient.release(order.getId(), DEFAULT_WAREHOUSE_ID); } catch (Exception ignore) { }
-        try { paymentClient.refund(order.getId()); } catch (Exception ignore) { }
+        try {
+            // Step 0: create payment record if not exists
+            paymentClient.create(com.tien.orderservice.dto.request.PaymentCreateRequest.builder()
+                    .orderId(order.getId())
+                    .customerId(order.getCustomerId())
+                    .method("COD")
+                    .amount(order.getAmount())
+                    .build()); inventoryClient.release(order.getId(), DEFAULT_WAREHOUSE_ID); } catch (Exception ignore) { }
+        try {
+            // Step 0: create payment record if not exists
+            paymentClient.create(com.tien.orderservice.dto.request.PaymentCreateRequest.builder()
+                    .orderId(order.getId())
+                    .customerId(order.getCustomerId())
+                    .method("COD")
+                    .amount(order.getAmount())
+                    .build()); paymentClient.refund(order.getId()); } catch (Exception ignore) { }
     }
 }

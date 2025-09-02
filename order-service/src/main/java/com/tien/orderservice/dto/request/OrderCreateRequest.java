@@ -8,12 +8,16 @@ import lombok.experimental.FieldDefaults;
 import java.math.BigDecimal;
 import java.util.List;
 
-@Data @NoArgsConstructor @AllArgsConstructor @Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderCreateRequest {
-    @NotNull String customerId;
+    String customerId;
     @NotNull BigDecimal amount;
     @NotNull List<Item> items;
+    Long warehouseId; // optional, defaults by system
 
     @Data
     @NoArgsConstructor
@@ -22,7 +26,7 @@ public class OrderCreateRequest {
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class Item {
         @NotNull
-        Long productId; 
+        Long productId;
         @Min(1)
         Integer quantity;
     }

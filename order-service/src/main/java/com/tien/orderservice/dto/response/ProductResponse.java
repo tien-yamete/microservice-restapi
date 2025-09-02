@@ -1,5 +1,6 @@
 package com.tien.orderservice.dto.response;
 
+import java.math.BigDecimal;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -8,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderItemResponse {
-    Long productId;
-    Integer quantity;
+public class ProductResponse {
+    Long id;
+    BigDecimal price;
 }

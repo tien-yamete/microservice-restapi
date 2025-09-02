@@ -11,7 +11,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ProductStock {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     @Column(nullable=false)

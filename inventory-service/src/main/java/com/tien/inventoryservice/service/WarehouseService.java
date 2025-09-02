@@ -10,6 +10,7 @@ import com.tien.inventoryservice.repository.WarehouseRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class WarehouseService {
     WarehouseRepository repo;
     WarehouseMapper mapper;
 
+    @PreAuthorize("hasRole('ADMIN')")
     public WarehouseResponse create(WarehouseRequest req) {
         if (repo.existsByCode(req.getCode())) throw new AppException(ErrorCode.DUPLICATED);
         Warehouse wh = mapper.toWarehouse(req);
@@ -28,6 +30,7 @@ public class WarehouseService {
         return mapper.toWarehouseResponse(wh);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public WarehouseResponse update(Long id, WarehouseRequest req) {
         Warehouse wh = repo.findById(id).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
         if (req.getCode()!=null) wh.setCode(req.getCode());
@@ -45,6 +48,8 @@ public class WarehouseService {
     public List<WarehouseResponse> list(){
         return repo.findAll().stream().map(mapper::toWarehouseResponse).toList();
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(Long id){
         repo.deleteById(id);
     }

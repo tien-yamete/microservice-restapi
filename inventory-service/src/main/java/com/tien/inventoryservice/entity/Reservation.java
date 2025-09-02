@@ -15,9 +15,11 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Reservation {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(unique = true)
     Long orderId;
 
     @Enumerated(EnumType.STRING)
